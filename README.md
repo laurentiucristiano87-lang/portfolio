@@ -1,8 +1,9 @@
 # Portfolio — Cristian
 
-Ciao 👋 Sono Cristian, da Palombara Sabina (RM).
-Mi occupo di IT, automazione e piccoli progetti che nascono più per
-curiosità che per necessità. Qui raccolgo le cose che costruisco,
+Ciao 👋 Sono Cristian
+Ogni tanto faccio cose, automazioni e piccoli progetti che nascono più per
+curiosità che per necessità. 
+Qui raccolgo le cose che costruisco,
 così non le dimentico.
 
 ## Cosa trovi qui
