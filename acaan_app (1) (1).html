@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Il Numero Pensato</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0d13; --bg-elevated:#151824; --panel:#1a1e2b;
+    --gold:#c9a227; --gold-bright:#f0cf6a; --cream:#ece4d0;
+    --ink:#20242c; --crimson:#a5333f; --emerald:#255c4d; --muted:#9b968a;
+    --font-display:'Fraunces', serif; --font-body:'Inter', sans-serif; --font-mono:'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;min-height:100vh;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,162,39,0.10), transparent 60%),
+      radial-gradient(ellipse 120% 80% at 50% 100%, rgba(37,92,77,0.12), transparent 60%),
+      var(--bg);
+    font-family:var(--font-body); color:var(--cream); -webkit-font-smoothing:antialiased;
+  }
+  #app{max-width:780px;margin:0 auto;padding:32px 20px 80px;}
+  header.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px;}
+  .brand{font-family:var(--font-display);font-size:15px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-bright);}
+  .back-btn{font-family:var(--font-mono);font-size:12px;color:var(--muted);background:none;border:1px solid rgba(155,150,138,0.3);border-radius:20px;padding:6px 14px;cursor:pointer;letter-spacing:0.04em;}
+  .back-btn:hover{border-color:var(--gold);color:var(--gold-bright);}
+  .back-btn:focus-visible, button:focus-visible, input:focus-visible{outline:2px solid var(--gold-bright);outline-offset:2px;}
+  .hero{text-align:center;margin-bottom:44px;}
+  .hero h1{font-family:var(--font-display);font-weight:600;font-size:clamp(32px,6vw,48px);margin:0 0 10px;line-height:1.05;}
+  .hero p{color:var(--muted);font-size:15px;max-width:480px;margin:0 auto;line-height:1.5;}
+  .acts{display:flex;flex-direction:column;gap:16px;}
+  .act-card{background:linear-gradient(160deg, var(--panel), var(--bg-elevated));border:1px solid rgba(201,162,39,0.18);border-radius:14px;padding:22px 24px;display:flex;align-items:center;gap:20px;cursor:pointer;transition:border-color .2s, transform .2s;text-align:left;}
+  .act-card:hover{border-color:var(--gold);transform:translateY(-2px);}
+  .act-num{font-family:var(--font-display);font-style:italic;font-size:34px;color:var(--gold);width:48px;flex-shrink:0;}
+  .act-body h2{font-family:var(--font-display);font-size:20px;font-weight:600;margin:0 0 4px;}
+  .act-body p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.45;}
+  .stage-title{font-family:var(--font-display);font-size:26px;font-weight:600;margin:0 0 6px;}
+  .patter{font-family:var(--font-display);font-style:italic;font-weight:500;font-size:19px;line-height:1.5;color:var(--gold-bright);margin-bottom:26px;min-height:1.5em;animation:fadeIn .5s ease-out;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+  .controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:26px;}
+  .num-input{font-family:var(--font-mono);font-size:22px;background:var(--panel);border:1px solid rgba(201,162,39,0.3);color:var(--gold-bright);border-radius:8px;width:78px;height:52px;text-align:center;}
+  .primary-btn{font-family:var(--font-body);font-weight:600;font-size:14px;background:var(--gold);color:#1a1508;border:none;border-radius:8px;padding:13px 22px;cursor:pointer;transition:background .2s, transform .1s;}
+  .primary-btn:hover{background:var(--gold-bright);}
+  .primary-btn:active{transform:scale(0.98);}
+  .primary-btn:disabled{background:#4a4636;color:#8a8471;cursor:not-allowed;}
+  .columns{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:22px;justify-content:center;}
+  .col{display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .col-cards{display:flex;flex-direction:column;gap:6px;}
+  .col-btn{margin-top:6px;}
+  .spread{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px;justify-content:center;}
+  .halves{display:flex;gap:28px;flex-wrap:wrap;justify-content:center;margin-bottom:20px;}
+  .half{display:flex;flex-direction:column;align-items:center;gap:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(201,162,39,0.15);border-radius:12px;padding:16px;}
+  .half .spread{margin-bottom:0;max-width:340px;}
+  .deal-row{display:flex;flex-wrap:wrap;gap:10px 12px;margin-bottom:14px;align-items:flex-end;justify-content:center;}
+  .deal-slot{display:flex;flex-direction:column;align-items:center;gap:6px;animation:dropIn .3s cubic-bezier(.2,.7,.3,1) both;animation-delay:calc(var(--i,0)*70ms);}
+  @keyframes dropIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+  .count-num{font-family:var(--font-mono);font-size:11px;color:var(--muted);}
+  .card{width:52px;height:74px;border-radius:6px;background:var(--cream);border:1px solid rgba(0,0,0,0.15);box-shadow:0 2px 6px rgba(0,0,0,0.35);position:relative;display:flex;align-items:center;justify-content:center;cursor:default;transition:transform .15s, box-shadow .15s;flex-shrink:0;}
+  .card .corner{position:absolute;font-family:var(--font-body);font-weight:600;font-size:10px;line-height:1;top:4px;left:4px;}
+  .card .corner.br{top:auto;bottom:4px;left:auto;right:4px;transform:rotate(180deg);}
+  .card .pip{font-size:20px;}
+  .card.ink .corner, .card.ink .pip{color:var(--ink);}
+  .card.crimson .corner, .card.crimson .pip{color:var(--crimson);}
+  .card.is-target{box-shadow:0 0 0 2px var(--gold-bright), 0 8px 20px rgba(240,207,106,0.45);transform:translateY(-6px);}
+  .reveal-banner{text-align:center;padding:30px 20px;margin-top:14px;background:radial-gradient(ellipse at center, rgba(201,162,39,0.16), transparent 70%);border-radius:14px;animation:fadeIn .6s ease-out;}
+  .reveal-cards{display:flex;justify-content:center;gap:26px;flex-wrap:wrap;}
+  .reveal-cards .card{width:74px;height:104px;}
+  .reveal-cards .card .pip{font-size:30px;}
+  .reveal-cards .card .corner{font-size:13px;}
+  .card.pop-in{animation:popIn .28s ease-out both;animation-delay:calc(var(--i,0)*16ms);}
+  @keyframes popIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+  .area-fade{transition:opacity .22s ease;}
+  .area-fade.fade-out{opacity:0;}
+  .primary-btn.ghost{background:transparent;color:var(--gold-bright);border:1px solid rgba(201,162,39,0.5);}
+  .primary-btn.ghost:hover{background:rgba(201,162,39,0.12);}
+  .g2-box{margin:0 auto 22px;}
+  .g2-box .spread{max-width:560px;}
+  .card.back{background:linear-gradient(135deg,#2a2f45,#1a1e2b);border:1px solid rgba(201,162,39,0.4);cursor:pointer;}
+  .card.back::after{content:'✦';color:var(--gold);font-size:18px;opacity:.7;}
+  .card.back:hover{transform:translateY(-4px);box-shadow:0 6px 14px rgba(0,0,0,.5);border-color:var(--gold-bright);}
+  .card.flip{animation:flipIn .45s ease-out;}
+  @keyframes flipIn{from{transform:rotateY(90deg) scale(1.06);}to{transform:rotateY(0);}}
+  .deal-row.resolved .card.back{opacity:.4;cursor:default;pointer-events:none;}
+  @media (prefers-reduced-motion: reduce){ *{animation-duration:0.001ms !important;animation-delay:0ms !important;} }
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <span class="brand">Il Numero Pensato</span>
+    <button class="back-btn" id="backBtn" style="display:none">← Torna al menù</button>
+  </header>
+  <main id="view-root"></main>
+</div>
+
+<script>
+const SUITS = [{sym:'♠', color:'ink'}, {sym:'♥', color:'crimson'}, {sym:'♦', color:'crimson'}, {sym:'♣', color:'ink'}];
+const RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+function freshDeck(){ const d=[]; for(const s of SUITS) for(const r of RANKS) d.push({rank:r, suit:s.sym, color:s.color}); return d; }
+function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function delay(ms){ return new Promise(res=>setTimeout(res,ms)); }
+function cardEl(card, {target=false}={}){
+  const el=document.createElement('div');
+  el.className='card '+card.color+(target?' is-target':'');
+  el.innerHTML=`<span class="corner tl">${card.rank}${card.suit}</span><span class="pip">${card.suit}</span><span class="corner br">${card.rank}${card.suit}</span>`;
+  return el;
+}
+function cardHTML(card, target){
+  return `<div class="card ${card.color}${target?' is-target':''}">
+    <span class="corner tl">${card.rank}${card.suit}</span><span class="pip">${card.suit}</span><span class="corner br">${card.rank}${card.suit}</span></div>`;
+}
+
+const root=document.getElementById('view-root');
+const backBtn=document.getElementById('backBtn');
+backBtn.addEventListener('click', renderMenu);
+function clearRoot(){ root.innerHTML=''; }
+
+function renderMenu(){
+  backBtn.style.display='none';
+  clearRoot();
+  const hero=document.createElement('div'); hero.className='hero';
+  hero.innerHTML=`<h1>Tre giochi di mistero</h1><p>Il mago è pronto. Scegli un gioco e lascia che sia il mazzo a leggerti nel pensiero.</p>`;
+  root.appendChild(hero);
+  const acts=document.createElement('div'); acts.className='acts';
+  const data=[
+    {n:'I', title:'Le tre colonne', desc:'Pensa una carta tra 21. Non dirmela mai — dimmi solo dove finisce, tre volte di fila.', fn:renderGame1},
+    {n:'II', title:'Il mazzo che ricorda', desc:'Pensa una carta tra 52. Rispondi solo sì o no: alla fine il mazzo la ricorda per te.', fn:renderGame2},
+    {n:'III', title:'I due pensieri', desc:'Due numeri pensati, mai detti. Il mazzo si mescola, ma le tue carte tornano da te.', fn:renderGame3},
+  ];
+  data.forEach(d=>{
+    const card=document.createElement('div'); card.className='act-card';
+    card.innerHTML=`<span class="act-num">${d.n}</span><div class="act-body"><h2>${d.title}</h2><p>${d.desc}</p></div>`;
+    card.addEventListener('click', d.fn);
+    acts.appendChild(card);
+  });
+  root.appendChild(acts);
+}
+
+/* ---------------- GAME 1: le 21 carte ---------------- */
+function renderGame1(){
+  backBtn.style.display='inline-block';
+  clearRoot();
+  const wrap=document.createElement('div');
+  wrap.innerHTML=`<h2 class="stage-title">Le tre colonne</h2>
+    <p class="patter" id="g1-patter">Ecco 21 carte. Scegline una, in silenzio, e ricordala bene.</p>
+    <div id="g1-area"></div>`;
+  root.appendChild(wrap);
+  const packet = shuffle(freshDeck()).slice(0,21);
+  g1DealRound(packet, 1);
+}
+
+function g1DealRound(packet, round){
+  const area=document.getElementById('g1-area');
+  const patter=document.getElementById('g1-patter');
+  patter.textContent = round===1
+    ? 'Ecco 21 carte. Scegline una, in silenzio, e ricordala bene.'
+    : 'Ritrova la tua carta qui sotto. In quale colonna si trova adesso?';
+  const cols=[[],[],[]];
+  packet.forEach((c,i)=> cols[i%3].push(c));
+  area.innerHTML='';
+  const colsWrap=document.createElement('div'); colsWrap.className='columns';
+  cols.forEach((col, idx)=>{
+    const colEl=document.createElement('div'); colEl.className='col';
+    const cardsEl=document.createElement('div'); cardsEl.className='col-cards';
+    col.forEach(c=> cardsEl.appendChild(cardEl(c)));
+    const btn=document.createElement('button');
+    btn.className='primary-btn col-btn';
+    btn.textContent='È qui';
+    btn.addEventListener('click', ()=> g1Choose(cols, idx, round));
+    colEl.appendChild(cardsEl); colEl.appendChild(btn);
+    colsWrap.appendChild(colEl);
+  });
+  area.appendChild(colsWrap);
+}
+
+async function g1Choose(cols, chosenIdx, round){
+  const others = cols.filter((_,i)=> i!==chosenIdx);
+  const gathered = others[0].concat(cols[chosenIdx]).concat(others[1]);
+  if(round<3){
+    await delay(300);
+    g1DealRound(gathered, round+1);
+  } else {
+    await g1Reveal(gathered);
+  }
+}
+
+async function g1Reveal(finalPacket){
+  const area=document.getElementById('g1-area');
+  const patter=document.getElementById('g1-patter');
+  area.innerHTML=`<div class="deal-row" id="g1-count"></div>`;
+  patter.textContent='Conto fino al cuore del mazzo...';
+  await delay(500);
+  const row=document.getElementById('g1-count');
+  for(let i=0;i<11;i++){
+    const slot=document.createElement('div'); slot.className='deal-slot';
+    const num=document.createElement('div'); num.className='count-num'; num.textContent=i+1;
+    const el=cardEl(finalPacket[i], {target:i===10});
+    slot.appendChild(num); slot.appendChild(el);
+    row.appendChild(slot);
+    await delay(180);
+  }
+  await delay(400);
+  patter.textContent='Era questa.';
+  area.innerHTML+=`<div class="reveal-banner"><div class="reveal-cards">${cardHTML(finalPacket[10],true)}</div></div>`;
+}
+
+/* ---------------- GAME 2: il mazzo che ricorda ---------------- */
+const G2_PATTER=[
+  'Osserva bene queste carte. La tua è tra loro?',
+  'Il mazzo si rimescola. La vedi ancora?',
+  'Non pensare ad altro. È qui in mezzo?',
+  'Il mazzo comincia a ricordare. Cercala di nuovo.',
+  'Penultima domanda. C’è, questa volta?',
+  'Un’ultima occhiata. La tua carta è davanti a te?'
+];
+
+function renderGame2(){
+  backBtn.style.display='inline-block';
+  clearRoot();
+  const wrap=document.createElement('div');
+  wrap.innerHTML=`<h2 class="stage-title">Il mazzo che ricorda</h2>
+    <p class="patter" id="g2-patter">Pensa una carta, una qualsiasi delle 52. Non dirmela mai: rispondi solo sì o no.</p>
+    <div id="g2-area" class="area-fade"></div>`;
+  root.appendChild(wrap);
+  const pool = shuffle(freshDeck());
+  g2Round(pool, 0, 0);
+}
+
+function g2Round(pool, bit, acc){
+  const area=document.getElementById('g2-area');
+  const patter=document.getElementById('g2-patter');
+  if(bit===6){ g2Reveal(pool[Math.min(acc, pool.length-1)]); return; }
+  patter.textContent=G2_PATTER[bit];
+  const group=pool.filter((_,i)=> (i>>bit)&1);
+  const shown=shuffle(group);
+  area.innerHTML='';
+  const box=document.createElement('div'); box.className='half g2-box';
+  const spread=document.createElement('div'); spread.className='spread';
+  shown.forEach((c,i)=>{ const el=cardEl(c); el.classList.add('pop-in'); el.style.setProperty('--i',i); spread.appendChild(el); });
+  box.appendChild(spread);
+  const controls=document.createElement('div'); controls.className='controls'; controls.style.justifyContent='center';
+  const yes=document.createElement('button'); yes.className='primary-btn'; yes.textContent='Sì, la vedo';
+  const no=document.createElement('button'); no.className='primary-btn ghost'; no.textContent='Non c’è';
+  yes.addEventListener('click', ()=> g2Next(pool, bit, acc | (1<<bit)));
+  no.addEventListener('click', ()=> g2Next(pool, bit, acc));
+  controls.appendChild(yes); controls.appendChild(no);
+  area.appendChild(box); area.appendChild(controls);
+}
+
+function g2Next(pool, bit, acc){
+  const area=document.getElementById('g2-area');
+  area.classList.add('fade-out');
+  setTimeout(()=>{ area.classList.remove('fade-out'); g2Round(pool, bit+1, acc); }, 230);
+}
+
+async function g2Reveal(card){
+  const area=document.getElementById('g2-area');
+  const patter=document.getElementById('g2-patter');
+  area.innerHTML='';
+  patter.textContent='Il mazzo ha ricordato ogni tua risposta...';
+  await delay(900);
+  patter.textContent='Ed è questa la carta che hai pensato.';
+  area.innerHTML=`<div class="reveal-banner"><div class="reveal-cards">${cardHTML(card,true)}</div></div>`;
+}
+
+/* ---------------- GAME 3: i due pensieri ---------------- */
+function g3DealRow(rowEl, cards, targetIdx=-1){
+  cards.forEach((c,i)=>{
+    const slot=document.createElement('div'); slot.className='deal-slot'; slot.style.setProperty('--i',i);
+    const num=document.createElement('div'); num.className='count-num'; num.textContent=i+1;
+    slot.appendChild(num); slot.appendChild(cardEl(c,{target:i===targetIdx}));
+    rowEl.appendChild(slot);
+  });
+}
+
+function g3BackRow(rowEl, packet, onFlip){
+  let done=false;
+  packet.forEach((c,i)=>{
+    const slot=document.createElement('div'); slot.className='deal-slot'; slot.style.setProperty('--i',i);
+    const num=document.createElement('div'); num.className='count-num'; num.textContent=i+1;
+    const back=document.createElement('div'); back.className='card back';
+    back.addEventListener('click', ()=>{
+      if(done) return; done=true;
+      rowEl.classList.add('resolved');
+      const face=cardEl(c,{target:true}); face.classList.add('flip');
+      back.replaceWith(face);
+      onFlip(c);
+    });
+    slot.appendChild(num); slot.appendChild(back);
+    rowEl.appendChild(slot);
+  });
+}
+
+function renderGame3(){
+  backBtn.style.display='inline-block';
+  clearRoot();
+  const wrap=document.createElement('div');
+  wrap.innerHTML=`<h2 class="stage-title">I due pensieri</h2>
+    <p class="patter" id="g3-patter">Pensa un numero da 1 a 10. Solo nella tua mente: non lo dirai mai a nessuno.</p>
+    <div class="controls"><button class="primary-btn" id="g3-go1">L’ho pensato</button></div>
+    <div id="g3-area" class="area-fade"></div>`;
+  root.appendChild(wrap);
+  const deck=shuffle(freshDeck());
+  const packet1=deck.slice(0,10), packet2=deck.slice(10,20);
+  document.getElementById('g3-go1').addEventListener('click', async (e)=>{
+    e.target.disabled=true;
+    document.getElementById('g3-patter').textContent='Dieci carte. Ricorda, in silenzio, quella che cade sul tuo numero.';
+    const area=document.getElementById('g3-area');
+    area.innerHTML=`<div class="deal-row" id="g3-deal1"></div>`;
+    g3DealRow(document.getElementById('g3-deal1'), packet1);
+    await delay(10*70+350);
+    const cont=document.createElement('button');
+    cont.className='primary-btn'; cont.textContent='La tengo bene a mente';
+    cont.style.marginTop='16px';
+    cont.addEventListener('click', ()=> g3Phase2(packet1, packet2));
+    area.appendChild(cont);
+  });
+}
+
+function g3Phase2(packet1, packet2){
+  const patter=document.getElementById('g3-patter');
+  const area=document.getElementById('g3-area');
+  patter.textContent='Ora un secondo numero, sempre da 1 a 10. Il secondo segreto.';
+  area.innerHTML=`<div class="controls"><button class="primary-btn" id="g3-go2">L’ho pensato</button></div><div id="g3-p2"></div>`;
+  document.getElementById('g3-go2').addEventListener('click', async (e)=>{
+    e.target.disabled=true;
+    patter.textContent='Altre dieci carte, nuove. Ferma il pensiero su quella al tuo numero.';
+    const p2=document.getElementById('g3-p2');
+    p2.innerHTML=`<div class="deal-row" id="g3-deal2"></div>`;
+    g3DealRow(document.getElementById('g3-deal2'), packet2);
+    await delay(10*70+350);
+    const cont=document.createElement('button');
+    cont.className='primary-btn'; cont.textContent='Mescola il mazzo';
+    cont.style.marginTop='16px';
+    cont.addEventListener('click', ()=> g3Reveal(packet1, packet2));
+    p2.appendChild(cont);
+  });
+}
+
+async function g3Reveal(packet1, packet2){
+  const patter=document.getElementById('g3-patter');
+  const area=document.getElementById('g3-area');
+  area.innerHTML='';
+  patter.textContent='Il mazzo si mescola... ma i tuoi pensieri pesano più delle altre carte.';
+  await delay(1300);
+  patter.textContent='Senza dire nulla: gira la carta alla posizione del tuo primo numero.';
+  area.innerHTML=`<div class="deal-row" id="g3-back1"></div><div id="g3-stage2"></div>`;
+  g3BackRow(document.getElementById('g3-back1'), packet1, async (card1)=>{
+    await delay(700);
+    patter.textContent='Il tuo primo pensiero, tornato da te. Ora gira quella del secondo numero.';
+    const stage2=document.getElementById('g3-stage2');
+    stage2.innerHTML=`<div class="deal-row" id="g3-back2"></div>`;
+    g3BackRow(document.getElementById('g3-back2'), packet2, async (card2)=>{
+      await delay(700);
+      patter.textContent='I tuoi due pensieri.';
+      const banner=document.createElement('div');
+      banner.innerHTML=`<div class="reveal-banner"><div class="reveal-cards">${cardHTML(card1,true)}${cardHTML(card2,true)}</div></div>`;
+      area.appendChild(banner);
+    });
+  });
+}
+
+renderMenu();
+</script>
+</body>
+</html>
